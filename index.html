@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauschring Düsseldorf und Umgebung</title>
+
+  <style>
+    /* ==========================================================================
+       VARIABLES Y ESTILOS BASE (100% autocontenido, sin dependencias externas)
+       ========================================================================== */
+    :root {
+      --bg-page: #ffffff;
+      --text-main: #000000;
+      --text-person: #7B1F3A;
+
+      /* Colores sección Angebote */
+      --angebot-bg: #FFD6D6;
+      --angebot-card-bg: #FFE4E4;
+      --angebot-border: #F57EC6;
+      --angebot-badge: #F57EC6;
+
+      /* Colores sección Gesuche */
+      --gesuch-bg: #DCFFDC;
+      --gesuch-card-bg: #E8FFE8;
+      --gesuch-border: #9AD5A0;
+      --gesuch-badge: #9AD5A0;
+
+      /* Tipografía condensada en negrita con alternativas locales fiables */
+      --font-condensed: 'Arial Narrow', 'Roboto Condensed', 'Liberation Sans Narrow', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.4;
+      min-height: 100vh;
+      padding: 1.25rem 1rem 2.5rem;
+    }
+
+    /* ==========================================================================
+       CABECERA CON SILUETA DE DÜSSELDORF EN NEGRO SOBRE BLANCO
+       ========================================================================== */
+    .site-header {
+      text-align: center;
+      max-width: 1400px;
+      margin: 0 auto 1.65rem;
+      padding: 0.25rem 1rem;
+    }
+
+    .skyline-wrapper {
+      max-width: 440px;
+      margin: 0 auto 0.55rem;
+      line-height: 0;
+    }
+
+    .skyline-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .site-title {
+      font-family: var(--font-condensed);
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: clamp(2.3rem, 5.2vw, 4rem);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #000000;
+      line-height: 1.05;
+    }
+
+    .site-subtitle {
+      font-family: var(--font-condensed);
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: clamp(1.3rem, 2.8vw, 2.05rem);
+      letter-spacing: 0.03em;
+      color: #111111;
+      margin-top: 0.2rem;
+    }
+
+    /* Controles globales opcionales */
+    .controls-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.1rem;
+    }
+
+    .control-btn {
+      font-family: var(--font-condensed);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-stretch: condensed;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.05rem;
+      border-radius: 999px;
+      border: 2px solid #111111;
+      background-color: #ffffff;
+      color: #111111;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .control-btn:hover {
+      background-color: #111111;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .control-btn:focus-visible {
+      outline: 3px solid #7B1F3A;
+      outline-offset: 3px;
+    }
+
+    /* ==========================================================================
+       CONTENEDOR PRINCIPAL DE LAS DOS SECCIONES
+       ========================================================================== */
+    .board-container {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1080px) {
+      .board-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.65rem;
+        align-items: stretch;
+      }
+    }
+
+    /* Secciones Angebote y Gesuche */
+    .board-section {
+      border-radius: 16px;
+      padding: 1.35rem 1.15rem 1.55rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .board-section--angebote {
+      background-color: var(--angebot-bg);
+      border: 2px solid var(--angebot-border);
+    }
+
+    .board-section--gesuche {
+      background-color: var(--gesuch-bg);
+      border: 2px solid var(--gesuch-border);
+    }
+
+    .section-title {
+      font-family: var(--font-condensed);
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: clamp(1.85rem, 3vw, 2.55rem);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 1.15rem;
+    }
+
+    /* Cuadrícula de 12 tarjetas dentro de cada sección */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+    }
+
+    /* ==========================================================================
+       TARJETAS INTERACTIVAS CON GIRO 3D (DIV ROLE="BUTTON" PARA PRESERVE-3D REAL)
+       ========================================================================== */
+    .card {
+      position: relative;
+      width: 100%;
+      height: 195px;
+      min-height: 185px;
+      perspective: 1000px;
+      -webkit-perspective: 1000px;
+      cursor: pointer;
+      border-radius: 12px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.22s ease;
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        height: 210px;
+      }
+    }
+
+    @media (min-width: 1320px) {
+      .card {
+        height: 225px;
+      }
+    }
+
+    /* Hover sutil con ligera elevación */
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card:hover .card-face {
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+    }
+
+    /* Foco visible accesible para navegación con teclado */
+    .card:focus-visible {
+      outline: 3px solid #7B1F3A;
+      outline-offset: 3px;
+    }
+
+    /* Contenedor interior que rota 180deg en 3D */
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .card.is-flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Caras frontal y trasera: idéntico tamaño y backface-visibility oculto */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.22s ease;
+    }
+
+    /* Estilos específicos según tipo */
+    .card--angebot .card-face {
+      background-color: var(--angebot-card-bg);
+      border: 2.5px solid var(--angebot-border);
+    }
+
+    .card--gesuch .card-face {
+      background-color: var(--gesuch-card-bg);
+      border: 2.5px solid var(--gesuch-border);
+    }
+
+    /* CARA FRONTAL: Título centrado con amplio relleno y partición silábica alemana */
+    .card-front {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 14px;
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    .card.is-flipped .card-front {
+      pointer-events: none;
+    }
+
+    .front-title {
+      font-family: var(--font-condensed);
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+      line-height: 1.22;
+      color: #000000;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+
+    /* CARA TRASERA: Rotada 180deg inicialmente; al girar card-inner queda a 0deg */
+    .card-back {
+      transform: rotateY(180deg);
+      justify-content: space-between;
+      padding: 0.7rem 0.75rem;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .card.is-flipped .card-back {
+      pointer-events: auto;
+    }
+
+    .back-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.38rem;
+      flex-shrink: 0;
+      margin-bottom: 0.3rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font-condensed);
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-stretch: condensed;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #000000;
+      padding: 0.12rem 0.42rem;
+      border-radius: 5px;
+      flex-shrink: 0;
+      line-height: 1.2;
+      margin-top: 0.06rem;
+    }
+
+    .badge--angebot {
+      background-color: var(--angebot-badge);
+    }
+
+    .badge--gesuch {
+      background-color: var(--gesuch-badge);
+    }
+
+    .back-title {
+      font-family: var(--font-condensed);
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: 0.92rem;
+      line-height: 1.15;
+      color: #000000;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+
+    /* Contenedor central del texto del anuncio (sin scroll interno) */
+    .back-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .back-text {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      line-height: 1.3;
+      color: #000000;
+      width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+
+    /* Pie de la tarjeta con nombre y lugar en granate oscuro */
+    .back-footer {
+      flex-shrink: 0;
+      margin-top: 0.3rem;
+      padding-top: 0.25rem;
+      border-top: 1px solid rgba(123, 31, 58, 0.22);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-person);
+      line-height: 1.2;
+    }
+
+    /* Respeto por preferencias de movimiento reducido */
+    @media (prefers-reduced-motion: reduce) {
+      .card-inner {
+        transition-duration: 0.01ms;
+      }
+      .card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA PRINCIPAL -->
+  <header class="site-header">
+    <!-- Silueta minimalista de Düsseldorf (Rheinturm, Gehry-Bauten, Rheinkniebrücke) en negro sobre blanco -->
+    <div class="skyline-wrapper" aria-hidden="true">
+      <svg class="skyline-svg" viewBox="0 0 600 95" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+        <!-- Línea base del Rin -->
+        <rect x="10" y="88" width="580" height="4" rx="2" />
+        <!-- Edificios históricos Altstadt / Schlossturm -->
+        <path d="M55 88 V58 L68 48 L81 58 V88 Z" />
+        <path d="M88 88 V46 C88 38 104 38 104 46 V88 Z" />
+        <rect x="93" y="34" width="6" height="8" />
+        <polygon points="96,24 91,34 101,34" />
+        <!-- Puente Rheinkniebrücke (pilono y tirantes) -->
+        <rect x="148" y="26" width="5" height="62" />
+        <rect x="163" y="26" width="5" height="62" />
+        <rect x="145" y="42" width="26" height="3" />
+        <line x1="150" y1="30" x2="115" y2="88" stroke="#000000" stroke-width="1.5" />
+        <line x1="150" y1="45" x2="128" y2="88" stroke="#000000" stroke-width="1.5" />
+        <line x1="166" y1="30" x2="205" y2="88" stroke="#000000" stroke-width="1.5" />
+        <line x1="166" y1="45" x2="190" y2="88" stroke="#000000" stroke-width="1.5" />
+        <!-- Rheinturm (Torre de telecomunicaciones de Düsseldorf) -->
+        <polygon points="264,88 269,28 273,28 278,88" />
+        <!-- Cesta / Mirador de la Rheinturm -->
+        <polygon points="260,33 282,33 278,25 264,25" />
+        <rect x="263" y="22" width="16" height="3" />
+        <!-- Antena superior -->
+        <rect x="270" y="4" width="2.2" height="19" />
+        <!-- MedienHafen / Edificios Gehry -->
+        <path d="M312 88 L308 50 L332 45 L336 88 Z" />
+        <path d="M342 88 C340 65 346 48 344 38 L368 42 C365 55 370 72 368 88 Z" />
+        <path d="M374 88 L378 52 L400 56 L396 88 Z" />
+        <!-- Bloques modernos y Dreischeibenhaus -->
+        <rect x="422" y="34" width="10" height="54" />
+        <rect x="434" y="26" width="12" height="62" />
+        <rect x="448" y="34" width="10" height="54" />
+        <rect x="475" y="54" width="28" height="34" />
+        <polygon points="512,88 512,60 526,48 540,60 540,88" />
+      </svg>
+    </div>
+
+    <h1 class="site-title">Tauschring Düsseldorf</h1>
+    <p class="site-subtitle">und Umgebung</p>
+
+    <!-- Botones globales opcionales -->
+    <div class="controls-bar" role="group" aria-label="Kartensteuerung">
+      <button type="button" class="control-btn" id="btn-flip-all">Alle umdrehen</button>
+      <button type="button" class="control-btn" id="btn-reset-all">Alle zurücksetzen</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL: DOS COLUMNAS EN ESCRITORIO, APILADAS EN MÓVIL -->
+  <main class="board-container">
+    <!-- Sección Angebote -->
+    <section class="board-section board-section--angebote" aria-labelledby="heading-angebote">
+      <h2 id="heading-angebote" class="section-title">Angebote</h2>
+      <div class="cards-grid" id="grid-angebote"></div>
+    </section>
+
+    <!-- Sección Gesuche -->
+    <section class="board-section board-section--gesuche" aria-labelledby="heading-gesuche">
+      <h2 id="heading-gesuche" class="section-title">Gesuche</h2>
+      <div class="cards-grid" id="grid-gesuche"></div>
+    </section>
+  </main>
+
+  <script>
+    /**
+     * ==========================================================================
+     * DATOS DE LOS ANUNCIOS (Array fácil de editar para añadir o modificar entradas)
+     * Propiedades: title, text, name, city, type ('angebot' | 'gesuch')
+     * ==========================================================================
+     */
+    const cardsData = [
+      // --- ANGEBOTE (12) ---
+      {
+        type: 'angebot',
+        title: 'Origami',
+        text: 'Ich zeige dir gerne, wie man Origami faltet.',
+        name: 'Kyung-Won',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Stricken',
+        text: 'Ich helfe dir gerne beim Stricken.',
+        name: 'Birgit',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Bücher: „Der Herr der Ringe“',
+        text: 'Ich besitze die drei Bücher „Der Herr der Ringe“ von J. R. R. Tolkien in der deutschen Übersetzung von Margaret Carroux und hätte sie lieber im englischen Original. Hat jemand die englischen Originalausgaben und möchte direkt tauschen?',
+        name: 'Aurin',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Fahrradberatung',
+        text: 'Beratung beim Kauf eines Fahrrads.',
+        name: 'Bernd',
+        city: 'Remscheid'
+      },
+      {
+        type: 'angebot',
+        title: 'Begleitung',
+        text: 'Begleitung bei Spaziergängen, Gesprächen und Vorlesen.',
+        name: 'Lieselotte',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Tiersitting',
+        text: 'Ich passe auf eure Katzen und/oder Hunde auf oder gehe mit euren Hunden spazieren. Ich habe mehrjährige Erfahrung.',
+        name: 'Brigitte',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Hundebetreuung',
+        text: 'Ich kümmere mich um deinen Hund, wenn du wegen Krankheit, Urlaub usw. abwesend bist.',
+        name: 'Jasmin',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Wohnung in Paris verleihen',
+        text: 'Ich verleihe meine Wohnung in Paris, in der Nähe des Gare du Nord, für ein Wochenende.',
+        name: 'Line',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Übersetzungen',
+        text: 'Ich biete Übersetzungen vom Englischen ins Deutsche an. Ich kann dir bei der Übersetzung von Briefen, kurzen Texten oder anderen Dokumenten helfen. Wenn du Hilfe brauchst, kannst du dich gerne bei mir melden.',
+        name: 'Sabine',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Übernachtungsmöglichkeit',
+        text: 'Übernachtungsmöglichkeit für eine oder mehrere Personen: ein Zimmer mit Gartenterrasse, in der Nähe des Hauptbahnhofs.',
+        name: 'Mechtild',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Handwerkliches',
+        text: 'Leichte handwerkliche Arbeiten, z. B. IKEA-Möbel aufbauen.',
+        name: 'Petra',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'angebot',
+        title: 'Haarstyling',
+        text: 'Ich schneide, färbe und style Haare. Auch Hochzeitsfrisuren und Make-up.',
+        name: 'Etab',
+        city: 'Düsseldorf'
+      },
+
+      // --- GESUCHE (12) ---
+      {
+        type: 'gesuch',
+        title: 'Nähen',
+        text: 'Ich suche jemanden für Näharbeiten.',
+        name: 'Waldemar',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Friseur',
+        text: 'Wer kann mir die Haare frisieren oder schneiden?',
+        name: 'Waldemar',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Deckel für Tupperdosen',
+        text: 'Ich suche die passenden Deckel für diese sehr kleinen, quadratischen Tupperdosen.',
+        name: 'Aurin',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Videofilme digitalisieren',
+        text: 'Wer kann meine 100–150 Videofilme digitalisieren? USB-Sticks, CDs oder DVDs stelle ich zur Verfügung. Bitte melde dich telefonisch oder per E-Mail. Danke!',
+        name: 'Hans-Werner',
+        city: 'Erkrath'
+      },
+      {
+        type: 'gesuch',
+        title: 'Haushaltshilfe',
+        text: 'Ich suche Hilfe in meinem Haushalt.',
+        name: 'Eva',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Nachhilfe',
+        text: 'Suche Nachhilfe in Mathematik und Deutsch.',
+        name: 'Etab',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Wohnungssuche',
+        text: 'Ich suche Hilfe bei der Suche nach einer Wohnung für einige Monate. Mein Hauptwohnsitz bleibt in Frankreich.',
+        name: 'Line',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Gartenarbeit',
+        text: 'Ich suche jemanden, der mir bei der Gartenarbeit hilft. Es gibt immer etwas zu tun: Unkraut jäten, Pflanzen pflegen und Sträucher schneiden.',
+        name: 'Simone',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Musizieren',
+        text: 'Ich suche jemanden, der gerne mit mir zusammen musiziert. Es macht mehr Spaß, gemeinsam Musik zu machen und neue Stücke auszuprobieren. Ich freue mich auf nette musikalische Treffen.',
+        name: 'Doro',
+        city: 'Solingen'
+      },
+      {
+        type: 'gesuch',
+        title: 'Umzugshilfe',
+        text: 'Ich suche ein oder zwei Personen, die mir beim Umzug helfen können. Ich muss einige Möbel und Umzugskartons transportieren und brauche Unterstützung beim Tragen und Einladen.',
+        name: 'Connie',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'DVD-Tausch',
+        text: 'Ich möchte meine DVD von „Dune – Der Wüstenplanet“ (1984), die nur eine deutsche Tonspur hat, gegen eine DVD tauschen, die mindestens auch die englische Tonspur enthält.',
+        name: 'Silvia',
+        city: 'Düsseldorf'
+      },
+      {
+        type: 'gesuch',
+        title: 'Aufräumhilfe',
+        text: 'Beim großen Aufräumen brauche ich Hilfe. Verschiedene Dinge müssen umgeräumt und aussortiert werden. Außerdem muss viel geputzt werden.',
+        name: 'Martin',
+        city: 'Düsseldorf'
+      }
+    ];
+
+    /**
+     * Actualiza el estado visual y de accesibilidad (aria-pressed y aria-hidden) de una tarjeta.
+     */
+    function setCardFlippedState(cardEl, shouldFlip) {
+      cardEl.classList.toggle('is-flipped', shouldFlip);
+      cardEl.setAttribute('aria-pressed', String(shouldFlip));
+
+      const front = cardEl.querySelector('.card-front');
+      const back = cardEl.querySelector('.card-back');
+      if (front) front.setAttribute('aria-hidden', String(shouldFlip));
+      if (back) back.setAttribute('aria-hidden', String(!shouldFlip));
+    }
+
+    /**
+     * Crea una tarjeta interactiva usando <div role="button" tabindex="0"> para garantizar
+     * que transform-style: preserve-3d funcione en todos los navegadores.
+     */
+    function createCardElement(item) {
+      const isAngebot = item.type === 'angebot';
+      const badgeLabel = isAngebot ? 'ANGEBOT' : 'GESUCH';
+
+      const card = document.createElement('div');
+      card.className = `card card--${item.type}`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-pressed', 'false');
+      card.setAttribute('aria-label', `${badgeLabel}: ${item.title}. Klicken oder Enter drücken zum Umdrehen.`);
+
+      const inner = document.createElement('div');
+      inner.className = 'card-inner';
+
+      // --- Cara frontal ---
+      const front = document.createElement('div');
+      front.className = 'card-face card-front';
+      front.setAttribute('aria-hidden', 'false');
+
+      const frontTitle = document.createElement('span');
+      frontTitle.className = 'front-title';
+      frontTitle.textContent = item.title;
+      front.appendChild(frontTitle);
+
+      // --- Cara trasera ---
+      const back = document.createElement('div');
+      back.className = 'card-face card-back';
+      back.setAttribute('aria-hidden', 'true');
+
+      // Cabecera trasera: etiqueta + título
+      const backHeader = document.createElement('div');
+      backHeader.className = 'back-header';
+
+      const badge = document.createElement('span');
+      badge.className = `badge badge--${item.type}`;
+      badge.textContent = badgeLabel;
+
+      const backTitle = document.createElement('span');
+      backTitle.className = 'back-title';
+      backTitle.textContent = item.title;
+
+      backHeader.appendChild(badge);
+      backHeader.appendChild(backTitle);
+
+      // Cuerpo trasero: texto completo del anuncio
+      const backBody = document.createElement('div');
+      backBody.className = 'back-body';
+
+      const backText = document.createElement('p');
+      backText.className = 'back-text';
+      backText.textContent = item.text;
+      backBody.appendChild(backText);
+
+      // Pie trasero: nombre y lugar en granate oscuro
+      const backFooter = document.createElement('div');
+      backFooter.className = 'back-footer';
+      backFooter.textContent = `${item.name}, ${item.city}`;
+
+      back.appendChild(backHeader);
+      back.appendChild(backBody);
+      back.appendChild(backFooter);
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      // Interacción con ratón / toque
+      card.addEventListener('click', () => {
+        const nextState = !card.classList.contains('is-flipped');
+        setCardFlippedState(card, nextState);
+      });
+
+      // Interacción accesible con teclado (Enter o Espacio)
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          const nextState = !card.classList.contains('is-flipped');
+          setCardFlippedState(card, nextState);
+        }
+      });
+
+      return card;
+    }
+
+    /**
+     * Ajusta dinámicamente el tamaño de fuente tanto en la cara frontal (si un título
+     * compuesto alemán es muy largo para el ancho disponible) como en la cara trasera
+     * para asegurar que ningún texto se recorte ni necesite scroll interno.
+     */
+    function fitAllCards() {
+      const cards = document.querySelectorAll('.card');
+
+      cards.forEach((card) => {
+        // 1. Ajuste del título frontal si desbordara en pantallas muy estrechas
+        const frontFace = card.querySelector('.card-front');
+        const frontTitle = card.querySelector('.front-title');
+        if (frontFace && frontTitle) {
+          frontTitle.style.fontSize = '';
+          let frontSize = parseFloat(window.getComputedStyle(frontTitle).fontSize) || 19;
+          while (
+            (frontTitle.scrollWidth > frontFace.clientWidth - 24 ||
+              frontTitle.scrollHeight > frontFace.clientHeight - 20) &&
+            frontSize > 12
+          ) {
+            frontSize -= 0.5;
+            frontTitle.style.fontSize = `${frontSize.toFixed(1)}px`;
+          }
+        }
+
+        // 2. Ajuste del texto descriptivo en la cara trasera
+        const backFace = card.querySelector('.card-back');
+        const bodyContainer = card.querySelector('.back-body');
+        const textEl = card.querySelector('.back-text');
+        const backTitle = card.querySelector('.back-title');
+
+        if (!backFace || !bodyContainer || !textEl || !backTitle) return;
+
+        backTitle.style.fontSize = backTitle.textContent.length > 24 ? '0.82rem' : '0.92rem';
+
+        let fontSize = 14; // px inicial
+        const minFontSize = 9.5; // px mínimo legible para textos muy extensos en móvil
+        textEl.style.fontSize = `${fontSize}px`;
+        textEl.style.lineHeight = '1.3';
+
+        while (
+          (backFace.scrollHeight > backFace.clientHeight ||
+            bodyContainer.scrollHeight > bodyContainer.clientHeight) &&
+          fontSize > minFontSize
+        ) {
+          fontSize -= 0.4;
+          textEl.style.fontSize = `${fontSize.toFixed(1)}px`;
+          if (fontSize <= 11.2) {
+            textEl.style.lineHeight = '1.22';
+          }
+        }
+      });
+    }
+
+    /**
+     * Inicializa el tablero renderizando las 24 tarjetas y conectando los controles.
+     */
+    function initBoard() {
+      const gridAngebote = document.getElementById('grid-angebote');
+      const gridGesuche = document.getElementById('grid-gesuche');
+
+      cardsData.forEach((item) => {
+        const card = createCardElement(item);
+        if (item.type === 'angebot') {
+          gridAngebote.appendChild(card);
+        } else if (item.type === 'gesuch') {
+          gridGesuche.appendChild(card);
+        }
+      });
+
+      // Ejecutar autoajuste tras el renderizado y cuando las fuentes estén listas
+      requestAnimationFrame(fitAllCards);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fitAllCards);
+      }
+
+      // Reajustar al cambiar el tamaño de pantalla
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(fitAllCards, 80);
+      });
+
+      // Botón: "Alle umdrehen"
+      document.getElementById('btn-flip-all').addEventListener('click', () => {
+        document.querySelectorAll('.card').forEach((card) => {
+          setCardFlippedState(card, true);
+        });
+      });
+
+      // Botón: "Alle zurücksetzen"
+      document.getElementById('btn-reset-all').addEventListener('click', () => {
+        document.querySelectorAll('.card').forEach((card) => {
+          setCardFlippedState(card, false);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initBoard);
+  </script>
+</body>
+</html>
